@@ -9,10 +9,12 @@ jobs:
   test-bot:
     strategy:
       matrix:
-        os: [macos-15-intel, macos-26]
         include:
+          - os: macos-15-intel
+          - os: macos-26
           - os: ubuntu-latest
             container: ghcr.io/homebrew/brew:main
+          - os: ubuntu-24.04-arm
       fail-fast: false
     runs-on: ${{ matrix.os }}
     container: ${{ matrix.container }}
@@ -22,6 +24,12 @@ jobs:
       contents: read
       pull-requests: read
     steps:
+      - name: Install Homebrew (Linux arm64, no container)
+        if: matrix.os == 'ubuntu-24.04-arm'
+        run: |
+          CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+          echo "/home/linuxbrew/.linuxbrew/bin" >> "$GITHUB_PATH"
+
       - name: Set up Homebrew
         id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@main
@@ -36,10 +44,7 @@ jobs:
           restore-keys: ${{ matrix.os }}-rubygems-
 
       - run: brew test-bot --only-cleanup-before
-
       - run: brew test-bot --only-setup
-
       - run: brew test-bot --only-tap-syntax
-
       - name: Build & test all formulae
         run: brew test-bot --only-formulae
