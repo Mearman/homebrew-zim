@@ -6,13 +6,13 @@ class Zimwriterfs < Formula
   license "GPL-3.0-or-later"
 
   depends_on "cmake" => :build
+  depends_on "gumbo-parser"
+  depends_on "icu4c" => :build
+  depends_on "libmagic"
+  depends_on "libzim"
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
-  depends_on "icu4c" => :build
-  depends_on "libzim"
-  depends_on "gumbo-parser"
-  depends_on "libmagic"
 
   resource "docopt" do
     url "https://github.com/docopt/docopt.cpp/archive/refs/tags/v0.6.3.tar.gz"
@@ -26,13 +26,11 @@ class Zimwriterfs < Formula
 
   def install
     install_docopt
-
     mustache_inc = buildpath/"mustache-include"
     mustache_inc.mkpath
     resource("mustache").stage mustache_inc
     ENV.append_path "CPATH", mustache_inc.to_s
 
-    # with_writer stays true (default) so gumbo+libmagic are required; build only the writer
     (buildpath/"src/meson.build").write "subdir('zimwriterfs')\n"
 
     mkdir "build" do
