@@ -1,8 +1,8 @@
 class Zim < Formula
   desc "Meta-formula: installs zim-tools (zimdump and the openzim reader tools)"
   homepage "https://github.com/Mearman/homebrew-zim"
-  url "https://github.com/Mearman/homebrew-zim/archive/3482ac9.tar.gz"
-  sha256 "79a80ad7be4b251cdddf7919d6564726ac3ffc870f6c5a3faa7b3cb83ed30929"
+  url "https://github.com/openzim/zim-tools/archive/refs/tags/3.7.0.tar.gz"
+  sha256 "6ce3c63832234f65c23cd76f0bd5076182d24b186b107d7a6295fbc21e252b83"
   license "MIT"
 
   depends_on "Mearman/zim/zim-tools"
