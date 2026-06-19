@@ -7,10 +7,10 @@ class Zimcheck < Formula
 
   depends_on "cmake" => :build
   depends_on "icu4c" => :build
-  depends_on "libzim"
   depends_on "meson" => :build
   depends_on "ninja" => :build
   depends_on "pkg-config" => :build
+  depends_on "libzim"
 
   resource "docopt" do
     url "https://github.com/docopt/docopt.cpp/archive/refs/tags/v0.6.3.tar.gz"
