@@ -1,4 +1,4 @@
-name: CI
+name: brew test-bot
 
 on:
   push:
@@ -7,35 +7,39 @@ on:
 
 jobs:
   test-bot:
-    name: brew test-bot (${{ matrix.os }})
     strategy:
       matrix:
-        os: [ubuntu-22.04, macos-13, macos-14]
+        os: [macos-15-intel, macos-26]
+        include:
+          - os: ubuntu-latest
+            container: ghcr.io/homebrew/brew:main
       fail-fast: false
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.container }}
+    permissions:
+      actions: read
+      checks: read
+      contents: read
+      pull-requests: read
     steps:
       - name: Set up Homebrew
         id: set-up-homebrew
-        uses: Homebrew/actions/setup-homebrew@master
+        uses: Homebrew/actions/setup-homebrew@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Cleanup before
-        run: brew test-bot --only-cleanup-before-fork
+      - name: Cache Homebrew Bundler RubyGems
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+          key: ${{ matrix.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ matrix.os }}-rubygems-
 
-      - name: Tap syntax
-        run: brew test-bot --only-tap-syntax
+      - run: brew test-bot --only-cleanup-before
+
+      - run: brew test-bot --only-setup
+
+      - run: brew test-bot --only-tap-syntax
 
       - name: Build & test all formulae
         run: brew test-bot --only-formulae
-
-      - name: Cleanup after
-        if: always()
-        run: brew test-bot --only-cleanup-after-fork
-
-      - name: Upload logs on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: logs-${{ matrix.os }}
-          path: |
-            ~/Library/Logs/Homebrew/**/*
-            /home/linuxbrew/.linuxbrew/var/log/**/*
