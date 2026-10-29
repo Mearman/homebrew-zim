@@ -48,11 +48,10 @@ class Zimcheck < Formula
   def install_docopt
     docopt_prefix = buildpath/"docopt-install"
     resource("docopt").stage do
-      mkdir "cmake-build" do
-        system "cmake", "..", "-DCMAKE_INSTALL_PREFIX=#{docopt_prefix}", "-DCMAKE_BUILD_TYPE=Release"
-        system "cmake", "--build", "."
-        system "cmake", "--install", "."
-      end
+      system "cmake", "-S", ".", "-B", "cmake-build",
+             "-DCMAKE_INSTALL_PREFIX=#{docopt_prefix}", "-DCMAKE_BUILD_TYPE=Release"
+      system "cmake", "--build", "cmake-build"
+      system "cmake", "--install", "cmake-build"
     end
     (docopt_prefix/"include/docopt").mkpath
     cp docopt_prefix/"include/docopt.h", docopt_prefix/"include/docopt/docopt.h"
