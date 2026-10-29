@@ -1,5 +1,7 @@
 # homebrew-zim
 
+[![GitHub](https://img.shields.io/badge/GitHub-181717?logo=github&logoColor=white)](https://github.com/Mearman/homebrew-zim) [![CI](https://img.shields.io/github/actions/workflow/status/Mearman/homebrew-zim/ci.yml?branch=main)](https://github.com/Mearman/homebrew-zim/actions)
+
 A Homebrew tap for [openzim's ZIM command-line tools](https://github.com/openzim/zim-tools)
 (`zimdump` and friends) on macOS.
 
